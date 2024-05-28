@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Asistente Virtual</title> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+        }
+        #chat-container {
+            width: 100%;
+            max-width: 400px;
+            height: 80vh;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            display: none; /* Initially hidden */
+        }
+        #header {
+            background: transparent;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+        #header img {
+            width: 60px; /* Reduced size */
+            height: 60px; /* Reduced size */
+            border-radius: 50%;
+            opacity: 0.7;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+        #header h1 {
+            color: #333;
+            margin: 0;
+            font-family: 'Merriweather', serif;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        #header h2 {
+            color: #333;
+            font-size: 14px;
+            line-height: 1.2;
+            margin: 0;
+        }
+        #historial {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .mensaje {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            border: none;
+        }
+        .mensaje-usuario {
+            background-color: #e9ecef;
+            justify-content: flex-end;
+        }
+        .mensaje-chatbot {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .mensaje-chatbot img {
+            width: 15px; /* Reduced size */
+            height: 15px; /* Reduced size */
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+        #formulario {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+        }
+        #formulario input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            margin-right: 10px;
+        }
+        #formulario button {
+            border: none;
+            background-color: transparent;
+            color: #28a745;
+            font-size: 24px;
+            cursor: pointer;
+            outline: none;
+        }
+        #quick-replies {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: transparent;
+            border: none;
+            border-radius: 10px;
+        }
+        #quick-replies button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        #quick-replies button:hover {
+            background-color: #218838;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        #chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: url('https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/247617479_2535445029932262_8853615725252776682_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFpxPgVGSTJd12qfazjgg7GJvUMa85Cv5Em9QxrzkK_kZ2QRJgz7aSpEAGDKfFoor7kvZ0MQGbS26l0iGGh3X-W&_nc_ohc=2LADsWyvKBUQ7kNvgHrHcu7&_nc_ht=scontent-lim1-1.xx&oh=00_AYDdAMThOLAaw4qDDhvd3GE9AnaRDNg9OOj0i3TIAr-kwQ&oe=6656D0CA') no-repeat center center;
+            background-size: cover;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="header">
+            <img src="https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/247617479_2535445029932262_8853615725252776682_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFpxPgVGSTJd12qfazjgg7GJvUMa85Cv5Em9QxrzkK_kZ2QRJgz7aSpEAGDKfFoor7kvZ0MQGbS26l0iGGh3X-W&_nc_ohc=2LADsWyvKBUQ7kNvgHrHcu7&_nc_ht=scontent-lim1-1.xx&oh=00_AYDdAMThOLAaw4qDDhvd3GE9AnaRDNg9OOj0i3TIAr-kwQ&oe=6656D0CA" alt="logoitp">
+            <div style="margin-left: 80px;">
+                <h1>Asistente Virtual</h1>
+                <h2>Estatuto estudiantil</h2>
+            </div>
+        </div>
+        <div id="historial">
+            <!-- Aquí se mostrarán los mensajes -->
+            {% for conversacion in historial %}
+                <div class="mensaje mensaje-usuario"><span>{{ conversacion.pregunta }}</span></div>
+                <div class="mensaje mensaje-chatbot"><img src="https://sibcolombia.net/wp-content/uploads/2017/08/logo-itp.png" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>{{ conversacion.respuesta|safe }}</span></div>
+                {% if conversacion.follow_up %}
+                    <div class="mensaje mensaje-chatbot">
+                        <strong>Opciones:</strong>
+                        <div id="quick-replies">
+                            {% for follow_up in conversacion.follow_up %}
+                                <button type="button" onclick="enviarPregunta('{{ follow_up }}')">{{ follow_up }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div id="formulario">
+            <form id="main-form" action="/" method="post" style="display: flex; align-items: center; flex: 1;">
+                <input type="text" name="message" id="user-input" placeholder="Escribe aquí tu mensaje" required>
+            </form>
+            <form action="/reset" method="post">
+                <button type="submit">♻︎</button>
+            </form>
+        </div>
+    </div>
+    <div id="chat-icon"></div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            let inactivityTimeout;
+            let warningTimeout;
+            let inactivityMessageShown = false;
+            let conversationEnded = false;
+            const warningTime = 40000;
+            const endTime = 20000;
+            const inactivityMessage = "Parece que has estado inactivo. ¿Quieres seguir conversando?";
+            const endMessage = "La conversación ha terminado por inactividad.";
+            const inputField = document.querySelector('input[name="message"]');
+            const form = document.querySelector('form[id="main-form"]');
+            const chatContainer = document.getElementById('chat-container');
+            const chatIcon = document.getElementById('chat-icon');
+
+            chatIcon.addEventListener('click', function() {
+                chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+            });
+
+            function resetInactivityTimer() {
+                clearTimeout(inactivityTimeout);
+                clearTimeout(warningTimeout);
+                if (!inactivityMessageShown && !conversationEnded) {
+                    inactivityTimeout = setTimeout(showInactivityWarning, warningTime);
+                }
+            }
+
+            function showInactivityWarning() {
+                if (!inactivityMessageShown && !conversationEnded) {
+                    mostrarRespuestaChatbot(inactivityMessage);
+                    inactivityMessageShown = true;
+                    warningTimeout = setTimeout(endConversation, endTime);
+                }
+            }
+
+            function endConversation() {
+                if (!conversationEnded) {
+                    mostrarRespuestaChatbot(endMessage);
+                    inputField.disabled = true;
+                    conversationEnded = true;
+                }
+            }
+
+            function mostrarMensajeDeSaludo() {
+                var historial = document.getElementById('historial');
+                var div = document.createElement('div');
+                div.className = 'mensaje mensaje-chatbot';
+                div.innerHTML = '<img src="https://sibcolombia.net/wp-content/uploads/2017/08/logo-itp.png" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>Hola, ¿cómo te puedo ayudar?</span>';
+                historial.appendChild(div);
+                setTimeout(() => {
+                    div.querySelector('span').style.opacity = 1;
+                }, 10);
+                resetInactividadMessageFlag();
+                resetInactivityTimer();
+            }
+
+            function resetInactividadMessageFlag() {
+                inactivityMessageShown = false;
+            }
+
+            if (localStorage.getItem('politicaAceptada')) {
+                mostrarMensajeDeSaludo();
+            }
+
+            form.onsubmit = function(e) {
+                e.preventDefault();
+
+                var mensajeUsuario = form.elements['message'].value;
+                mostrarMensajeUsuario(mensajeUsuario);
+
+                fetch('/', {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    setTimeout(() => {
+                        mostrarRespuestaChatbot(data.respuesta);
+                        mostrarFollowUp(data.follow_up);
+                        scrollToBottom();
+                    }, 500);
+                });
+
+                form.elements['message'].value = '';
+                scrollToBottom();
+                resetInactividadMessageFlag();
+                resetInactivityTimer();
+            };
+
+            function mostrarMensajeUsuario(mensaje) {
+                var historial = document.getElementById('historial');
+                var div = document.createElement('div');
+                div.className = 'mensaje mensaje-usuario';
+                div.innerHTML = '<span>' + mensaje + '</span>';
+                historial.appendChild(div);
+                resetInactividadMessageFlag();
+                resetInactivityTimer();
+            }
+
+            function mostrarRespuestaChatbot(mensaje) {
+                var historial = document.getElementById('historial');
+                var div = document.createElement('div');
+                div.className = 'mensaje mensaje-chatbot';
+                div.innerHTML = '<img src="https://sibcolombia.net/wp-content/uploads/2017/08/logo-itp.png" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>' + mensaje + '</span>';
+                historial.appendChild(div);
+                setTimeout(() => {
+                    div.querySelector('span').style.opacity = 1;
+                }, 10);
+                resetInactividadMessageFlag();
+                resetInactivityTimer();
+            }
+
+            function mostrarFollowUp(follow_up) {
+                if (follow_up.length > 0) {
+                    var historial = document.getElementById('historial');
+                    var div = document.createElement('div');
+                    div.className = 'mensaje mensaje-chatbot';
+                    var html = '<strong>Opciones:</strong><div id="quick-replies">';
+                    follow_up.forEach(function(option) {
+                        html += '<button type="button" class="btn" onclick="enviarPregunta(\'' + option + '\')">' + option + '</button>';
+                    });
+                    html += '</div>';
+                    div.innerHTML = html;
+                    historial.appendChild(div);
+                    setTimeout(() => {
+                        div.querySelector('span').style.opacity = 1;
+                    }, 10);
+                    resetInactividadMessageFlag();
+                    resetInactivityTimer();
+                }
+            }
+
+            window.enviarPregunta = function(pregunta) {
+                inputField.value = pregunta;
+                mostrarMensajeUsuario(pregunta);
+                fetch('/', {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    setTimeout(() => {
+                        mostrarRespuestaChatbot(data.respuesta);
+                        mostrarFollowUp(data.follow_up);
+                        scrollToBottom();
+                    }, 500);
+                });
+
+                form.elements['message'].value = '';
+                scrollToBottom();
+                resetInactividadMessageFlag();
+                resetInactivityTimer();
+            }
+
+            function scrollToBottom() {
+                var historial = document.getElementById('historial');
+                historial.scrollTop = historial.scrollHeight;
+            }
+
+            document.addEventListener('mousemove', resetInactivityTimer);
+            document.addEventListener('keydown', resetInactivityTimer);
+        });
+    </script>
+</body>
+</html>
