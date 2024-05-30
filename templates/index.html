@@ -153,7 +153,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: url('https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/247617479_2535445029932262_8853615725252776682_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFpxPgVGSTJd12qfazjgg7GJvUMa85Cv5Em9QxrzkK_kZ2QRJgz7aSpEAGDKfFoor7kvZ0MQGbS26l0iGGh3X-W&_nc_ohc=2LADsWyvKBUQ7kNvgHrHcu7&_nc_ht=scontent-lim1-1.xx&oh=00_AYDdAMThOLAaw4qDDhvd3GE9AnaRDNg9OOj0i3TIAr-kwQ&oe=6656D0CA') no-repeat center center;
+            background: url('fallback-image-url.jpg') no-repeat center center;
             background-size: cover;
             width: 60px;
             height: 60px;
@@ -165,7 +165,7 @@
 <body>
     <div id="chat-container">
         <div id="header">
-            <img src="https://scontent-lim1-1.xx.fbcdn.net/v/t39.30808-6/247617479_2535445029932262_8853615725252776682_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFpxPgVGSTJd12qfazjgg7GJvUMa85Cv5Em9QxrzkK_kZ2QRJgz7aSpEAGDKfFoor7kvZ0MQGbS26l0iGGh3X-W&_nc_ohc=2LADsWyvKBUQ7kNvgHrHcu7&_nc_ht=scontent-lim1-1.xx&oh=00_AYDdAMThOLAaw4qDDhvd3GE9AnaRDNg9OOj0i3TIAr-kwQ&oe=6656D0CA" alt="logoitp">
+            <img src="fallback-image-url.jpg" alt="logoitp">
             <div style="margin-left: 80px;">
                 <h1>Asistente Virtual</h1>
                 <h2>Estatuto estudiantil</h2>
@@ -175,7 +175,7 @@
             <!-- Aquí se mostrarán los mensajes -->
             {% for conversacion in historial %}
                 <div class="mensaje mensaje-usuario"><span>{{ conversacion.pregunta }}</span></div>
-                <div class="mensaje mensaje-chatbot"><img src="https://sibcolombia.net/wp-content/uploads/2017/08/logo-itp.png" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>{{ conversacion.respuesta|safe }}</span></div>
+                <div class="mensaje mensaje-chatbot"><img src="fallback-image-url.jpg" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>{{ conversacion.respuesta|safe }}</span></div>
                 {% if conversacion.follow_up %}
                     <div class="mensaje mensaje-chatbot">
                         <strong>Opciones:</strong>
@@ -248,7 +248,7 @@
                 var historial = document.getElementById('historial');
                 var div = document.createElement('div');
                 div.className = 'mensaje mensaje-chatbot';
-                div.innerHTML = '<img src="https://sibcolombia.net/wp-content/uploads/2017/08/logo-itp.png" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>Hola, ¿cómo te puedo ayudar?</span>';
+                div.innerHTML = '<img src="fallback-image-url.jpg" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>Hola, ¿cómo te puedo ayudar?</span>';
                 historial.appendChild(div);
                 setTimeout(() => {
                     div.querySelector('span').style.opacity = 1;
@@ -307,7 +307,7 @@
                 var historial = document.getElementById('historial');
                 var div = document.createElement('div');
                 div.className = 'mensaje mensaje-chatbot';
-                div.innerHTML = '<img src="https://sibcolombia.net/wp-content/uploads/2017/08/logo-itp.png" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>' + mensaje + '</span>';
+                div.innerHTML = '<img src="fallback-image-url.jpg" alt="Chatbot Icon" style="width: 15px; height: 15px;"><strong>BotITP:</strong> <span>' + mensaje + '</span>';
                 historial.appendChild(div);
                 setTimeout(() => {
                     div.querySelector('span').style.opacity = 1;
@@ -372,3 +372,4 @@
     </script>
 </body>
 </html>
+
